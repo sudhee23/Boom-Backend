@@ -47,6 +47,7 @@ exports.getVideoFeed = async (req, res) => {
       title: video.title,
       videoType: video.videoType,
       creator: video.creator.name,
+      creatorId:video.creator._id,
       thumbnail: video.thumbnail || "", // optional
       price: video.price,
       videoURL: video.videoURL,
@@ -71,6 +72,7 @@ exports.getVideoById = async (req, res) => {
       title: video.title,
       videoType: video.videoType,
       creator: video.creator.name,
+      creatorId:video.creator._id,
       thumbnail: video.thumbnail || "",
       price: video.price,
       videoURL: video.videoURL,
@@ -83,4 +85,16 @@ exports.getVideoById = async (req, res) => {
     res.status(500).json({ error: "Failed to fetch video" });
   }
 };
+
+exports.getMyVideos = async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const videos = await Video.find({ creator: userId }).sort({ createdAt: -1 });
+
+    res.status(200).json({ success: true, videos });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch your videos" });
+  }
+};
+
 
